@@ -853,6 +853,12 @@ impl<'probe> CoreInterface for Armv7m<'probe> {
         if !dhcsr.c_debugen() {
             tracing::warn!("Attempting to STEP while DHCSR->C_DEBUGEN is false");
         }
+
+        /*
+         * This patch is used to enable the ability to manually create PendSV, SysTick, and External exceptions, by removing the activation of C_MASKINTS.
+         * This is normally enabled in probe-rs, in order to allow for debugging workflows.
+         * This change will thus break debugging of actual applications.
+
         if !dhcsr.c_maskints() {
             dhcsr.set_c_maskints(true); // This must be reset to false when we run() again.
             dhcsr.enable_write();
@@ -860,6 +866,7 @@ impl<'probe> CoreInterface for Armv7m<'probe> {
                 .write_word_32(Dhcsr::get_mmio_address(), dhcsr.into())?;
             self.memory.flush()?;
         }
+        */
 
         // Leave halted state.
         // Step one instruction.
